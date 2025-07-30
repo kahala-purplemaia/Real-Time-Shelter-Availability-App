@@ -4,6 +4,7 @@ import { supabase } from './lib/supabase';
 import PublicDashboard from './components/PublicDashboard';
 import AuthForm from './components/AuthForm';
 import StaffDashboard from './components/StaffDashboard';
+import ShelterDetail from './components/ShelterDetail';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -47,6 +48,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<PublicDashboard />} />
+        <Route path="/shelter/:id" element={<ShelterDetail />} />
         <Route 
           path="/staff/login" 
           element={

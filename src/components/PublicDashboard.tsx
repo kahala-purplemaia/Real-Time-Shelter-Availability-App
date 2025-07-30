@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import type { Shelter } from '../types/shelter';
 import { 
@@ -18,6 +19,7 @@ import {
 import ShelterMap from './ShelterMap';
 
 export default function PublicDashboard() {
+  const navigate = useNavigate();
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
@@ -199,7 +201,11 @@ export default function PublicDashboard() {
             {/* Shelter List */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {shelters.map((shelter) => (
-                <div key={shelter.id} className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-200 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
+                <div 
+                  key={shelter.id} 
+                  onClick={() => navigate(`/shelter/${shelter.id}`)}
+                  className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-200 hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                >
                   <div className="p-8">
                     <div className="flex items-start justify-between mb-6">
                       <div className="flex-1">
