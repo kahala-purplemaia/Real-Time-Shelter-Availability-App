@@ -93,15 +93,19 @@ export default function PublicDashboard() {
       <header className="bg-white/90 backdrop-blur-sm shadow-lg border-b border-blue-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="bg-blue-600 p-3 rounded-xl shadow-lg">
-                <Home className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-bold text-gray-900">Emergency Shelter Network</h1>
-                <p className="text-gray-600 mt-2 text-lg">Real-time bed availability across the city</p>
-              </div>
-            </div>
+            <div className="flex items-center gap-6 sm:gap-8">
+  <div className="flex-shrink-0 flex items-center justify-center bg-blue-600 rounded-2xl shadow-lg w-16 h-16">
+    <Home className="h-8 w-8 text-white" />
+  </div>
+  <div className="flex flex-col justify-center">
+    <h1 className="text-4xl font-extrabold text-gray-900 gradient-text leading-tight">
+      ShelterWise
+    </h1>
+    <p className="text-lg text-gray-700 mt-1">
+      Real-time bed availability across Region 4
+    </p>
+  </div>
+</div>
             
             <div className="flex items-center gap-6">
               <div className="flex items-center text-sm text-gray-600 bg-white px-4 py-2 rounded-lg shadow-sm">
