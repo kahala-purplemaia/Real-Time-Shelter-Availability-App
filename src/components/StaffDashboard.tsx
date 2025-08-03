@@ -219,6 +219,31 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
           </div>
         )}
 
+        {/* Bed Utilization Stat Card */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-200 p-8 hover:shadow-2xl transition-shadow duration-300">
+            <div className="flex items-center">
+              <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-4 rounded-xl shadow-lg">
+                <Bed className="h-8 w-8 text-white" />
+              </div>
+              <div className="ml-6">
+                <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">Bed Utilization</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {(() => {
+                    const totalBeds = shelters.reduce((sum, s) => sum + (s.total_beds || 0), 0);
+                    const availableBeds = shelters.reduce((sum, s) => sum + (s.available_beds || 0), 0);
+                    if (!totalBeds) return 'N/A';
+                    const utilized = totalBeds - availableBeds;
+                    const percent = (utilized / totalBeds) * 100;
+                    return `${percent.toFixed(1)}%`;
+                  })()} 
+                </p>
+                <p className="text-sm text-gray-500">of beds utilized</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Shelter List */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {shelters.map((shelter) => {
