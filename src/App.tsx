@@ -49,6 +49,7 @@ function App() {
       <Routes>
         <Route path="/" element={<PublicDashboard />} />
         <Route path="/shelter/:id" element={<ShelterDetail />} />
+        <Route path="/staff/shelter/:id" element={<ShelterDetail />} />
         <Route 
           path="/staff/login" 
           element={

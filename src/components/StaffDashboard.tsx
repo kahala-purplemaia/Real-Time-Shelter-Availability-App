@@ -257,8 +257,12 @@ export default function StaffDashboard({ onLogout }: StaffDashboardProps) {
             
             return (
               <div 
-                key={shelter.id} 
-                className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-200 hover:shadow-2xl transition-all duration-300"
+                key={shelter.id}
+                className={`bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-200 hover:shadow-2xl transition-all duration-300${!isEditing ? ' hover:scale-[1.02] cursor-pointer' : ''}`}
+                onClick={!isEditing ? () => navigate(`/staff/shelter/${shelter.id}`) : undefined}
+                tabIndex={!isEditing ? 0 : -1}
+                role={!isEditing ? 'button' : undefined}
+                aria-disabled={isEditing}
               >
                 <div className="p-8">
                   <div className="flex items-start justify-between mb-6">

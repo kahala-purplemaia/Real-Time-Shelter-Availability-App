@@ -21,14 +21,23 @@ import {
   X
 } from 'lucide-react';
 
+import { useLocation } from 'react-router-dom';
+
 export default function ShelterDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Determine if staff mode based on URL
+  const isStaffMode = location.pathname.startsWith('/staff/shelter/');
   const [shelter, setShelter] = useState<Shelter | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+
+  // Only allow editing in staff mode
+  const canEdit = isStaffMode && isAuthenticated;
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({
@@ -41,7 +50,7 @@ export default function ShelterDetail() {
   useEffect(() => {
     if (id) {
       fetchShelterData();
-      checkAuthStatus();
+      if (isStaffMode) checkAuthStatus();
     }
   }, [id]);
 
@@ -49,6 +58,8 @@ export default function ShelterDetail() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session);
+    // If not staff mode, always set to false
+    if (!isStaffMode) setIsAuthenticated(false);
     } catch (error) {
       console.error('Error checking auth status:', error);
     }
@@ -157,9 +168,9 @@ export default function ShelterDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className={`min-h-screen bg-gradient-to-br ${isStaffMode ? 'from-purple-50 to-pink-100' : 'from-blue-50 to-indigo-100'} flex items-center justify-center`}>
         <div className="text-center">
-          <RefreshCw className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-600" />
+          <RefreshCw className={`h-12 w-12 animate-spin mx-auto mb-4 ${isStaffMode ? 'text-purple-600' : 'text-blue-600'}`} />
           <p className="text-gray-700 text-lg">Loading shelter details...</p>
         </div>
       </div>
@@ -168,13 +179,13 @@ export default function ShelterDetail() {
 
   if (error || !shelter) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className={`min-h-screen bg-gradient-to-br ${isStaffMode ? 'from-purple-50 to-pink-100' : 'from-blue-50 to-indigo-100'} flex items-center justify-center`}>
         <div className="text-center bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-red-200">
-          <AlertCircle className="h-12 w-12 mx-auto mb-4 text-red-600" />
+          <AlertCircle className={`h-12 w-12 mx-auto mb-4 ${isStaffMode ? 'text-purple-600' : 'text-red-600'}`} />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Shelter Not Found</h2>
           <p className="text-gray-700 mb-6">{error || 'The requested shelter could not be found.'}</p>
           <button
-            onClick={() => navigate('/')}
+            onClick={() => navigate(isStaffMode ? '/staff' : '/')}
             className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-semibold shadow-lg hover:shadow-xl mx-auto"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -188,14 +199,14 @@ export default function ShelterDetail() {
   const availabilityStatus = getAvailabilityStatus();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className={`min-h-screen bg-gradient-to-br ${isStaffMode ? 'from-purple-50 to-pink-100' : 'from-blue-50 to-indigo-100'}`}> 
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-sm shadow-lg border-b border-blue-200">
+      <header className={`bg-white/90 backdrop-blur-sm shadow-lg border-b ${isStaffMode ? 'border-purple-200' : 'border-blue-200'}`}> 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => navigate('/')}
+                onClick={() => navigate(isStaffMode ? '/staff' : '/')} 
                 className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -205,7 +216,7 @@ export default function ShelterDetail() {
             
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-4">
-                <div className="bg-blue-600 p-3 rounded-xl shadow-lg">
+                <div className={`${isStaffMode ? 'bg-purple-600' : 'bg-blue-600'} p-3 rounded-xl shadow-lg`}>
                   <Home className="h-6 w-6 text-white" />
                 </div>
                 <div>
@@ -215,7 +226,7 @@ export default function ShelterDetail() {
               </div>
               
               {/* Staff Edit Controls */}
-              {isAuthenticated && (
+              {canEdit && (
                 <div className="flex items-center gap-3">
                   {isEditing ? (
                     <>
@@ -247,7 +258,7 @@ export default function ShelterDetail() {
                   ) : (
                     <button
                       onClick={() => setIsEditing(true)}
-                      className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-md"
+                      className={`flex items-center gap-2 ${isStaffMode ? 'bg-purple-600 hover:bg-purple-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-4 py-2 rounded-lg transition-colors font-medium shadow-md`}
                     >
                       <Edit3 className="h-4 w-4" />
                       Edit Shelter
@@ -269,7 +280,7 @@ export default function ShelterDetail() {
         )}
         {/* Availability Status Banner */}
         <div className={`bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border p-6 ${
-          availabilityStatus.color === 'red' ? 'border-red-200' :
+          isStaffMode ? 'border-purple-200' : availabilityStatus.color === 'red' ? 'border-red-200' :
           availabilityStatus.color === 'orange' ? 'border-orange-200' : 'border-green-200'
         }`}>
           <div className="flex items-center justify-between">
@@ -342,7 +353,7 @@ export default function ShelterDetail() {
         </div>
 
         {/* Shelter Information */}
-        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border border-blue-200 p-8">
+        <div className={`bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl border ${isStaffMode ? 'border-purple-200' : 'border-blue-200'} p-8`}>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Shelter Information</h2>
           
           {/* Location */}
